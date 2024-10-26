@@ -4,9 +4,20 @@ var bodyParser = require('body-parser');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
+var cors = require('cors');
+var corsOptions = {
+	origin: 'http://localhost:4200',
+	credentials: true,
+	optionSuccessStatus: 200
+};
+app.use(cors(corsOptions));
+
 var db = require('./app/config/db.config.js');
 
 db.sequelize.sync({ force: false });
+
+var auth = require('./app/route/auth.js');
+auth(app);
 
 var user = require('./app/route/user');
 user(app);

@@ -15,7 +15,7 @@ exports.create = (req, res) => {
 	Movie.create({
 		name: req.body.name,
 		genre: req.body.genre,
-		length: req.body.length,
+		length: req.body.movieLength,
 		description: req.body.description,
 		releaseDate: req.body.releaseDate,
 	}).then(object => {
@@ -28,7 +28,7 @@ exports.update = (req, res) => {
 	Movie.update({
 		name: req.body.name,
 		genre: req.body.genre,
-		length: req.body.length,
+		length: req.body.movieLength,
 		description: req.body.description,
 		releaseDate: req.body.releaseDate,
 	},
