@@ -1,11 +1,28 @@
 <template>
-  <div>
+  <div v-if="isAdmin">
     <h4>Добавление сеанса</h4>
     <div v-if="!submitted">
       <form @submit="addSession">
-        <input class="form-control" type="text" name="title" id="title" placeholder="Наименование сеанса" required
-          v-model="session.title">
-        <input class="form-control" type="time" name="time" id="time" required v-model="session.time">
+        <div>
+          <input class="form-control" type="datetime-local" name="date" id="date" placeholder="Дата сеанса" required
+            v-model="session.date">
+        </div>
+        <div>
+          <select class="form-select" required v-model="session.movieId">
+            <option value="" disabled selected>Выберите фильм</option>
+            <option v-for="movie in movies" v-bind:key="movie.id" v-bind:value="movie.id">
+              {{ movie.name }}
+            </option>
+          </select>
+        </div>
+        <div>
+          <select class="form-select" required v-model="session.hallId">
+            <option value="" disabled selected>Выберите зал</option>
+            <option v-for="hall in halls" v-bind:key="hall.id" v-bind:value="hall.id">
+              Зал {{ hall.hallNumber }}
+            </option>
+          </select>
+        </div>
         <input class="btn btn-primary" type="submit" value="Добавить">
       </form>
     </div>
@@ -19,19 +36,26 @@
       </div>
     </div>
   </div>
+  <div v-else>
+    Недостаточно прав для добавления
+  </div>
 </template>
 
 <script>
 import http from "../../http-common";
+import UserService from '../../services/user.service';
 export default {
   name: "AddSession",
   data() {
     return {
       session: {
-        id: null,
-        title: "",
-        time: ""
+        date: "",
+        movieId: null,
+        hallId: null
       },
+      movies: [],
+      halls: [],
+      isAdmin: false,
       submitted: false
     };
   },
@@ -39,11 +63,18 @@ export default {
     addSession(e) {
       e.preventDefault();
       var data = {
-        title: this.session.title,
-        time: this.session.time
+        date: "",
+        movieId: this.session.movieId,
+        hallId: this.session.hallId
       };
+
+      // Convert html datetime-local to ISO time format
+      var htmlDate = this.session.date;
+      var jsDate = new Date(htmlDate);
+      data.date = jsDate.toISOString();
+
       http
-        .post("/addSession", data)
+        .post("/sessions", data)
         .then(response => {
           this.session.id = response.data.id;
         })
@@ -59,7 +90,27 @@ export default {
         title: "",
         time: ""
       };
+    },
+    getMovies() {
+      http.get("/movies")
+        .then(response => {
+          this.movies = response.data;
+        });
+    },
+    getHalls() {
+      http.get("/halls")
+        .then(response => {
+          this.halls = response.data;
+        });
     }
+  },
+  async mounted() {
+    if (this.$store.state.auth.user) {
+      let user = await UserService.getUser(this.$store.state.auth.user.id);
+      if (user.role == "admin") this.isAdmin = true;
+    }
+    this.getMovies();
+    this.getHalls();
   }
 }
 </script>

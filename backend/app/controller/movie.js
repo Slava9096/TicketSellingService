@@ -17,7 +17,7 @@ exports.create = (req, res) => {
 		genre: req.body.genre,
 		length: req.body.movieLength,
 		description: req.body.description,
-		releaseDate: req.body.releaseDate,
+		releaseYear: req.body.releaseYear,
 	}).then(object => {
 		globalFunctions.sendResult(res, object);
 	}).catch(err => {
@@ -30,7 +30,7 @@ exports.update = (req, res) => {
 		genre: req.body.genre,
 		length: req.body.movieLength,
 		description: req.body.description,
-		releaseDate: req.body.releaseDate,
+		releaseYear: req.body.releaseYear,
 	},
 		{
 			where: {
@@ -63,3 +63,17 @@ exports.findById = (req, res) => {
 			globalFunctions.sendError(res, err);
 		})
 };
+exports.findByGenre = (req, res) => {
+	Movie.findAll({
+		where: {
+			genre: req.params.genre
+		}
+	})
+}
+exports.findByYear = (req, res) => {
+	Movie.findAll({
+		where: {
+			genre: req.params.releaseYear
+		}
+	})
+}

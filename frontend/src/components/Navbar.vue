@@ -2,6 +2,8 @@
   <div id="app">
     <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #e3f2fd;">
       <div class="d-flex flex-row justify-content-between w-100">
+        <!-- Needed to align flex right way -->
+        <div></div>
         <div class="d-flex flex-row">
           <router-link class="item nav-item nav-link active btn btn-link" to="/listHalls">Залы</router-link>
           <router-link class="item nav-item nav-link active btn btn-link" to="/ListMovies">Фильмы</router-link>

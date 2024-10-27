@@ -1,11 +1,8 @@
 <template>
   <div>
     <h4>Список сеансов</h4>
-    <div v-if="displayContent">
+    <div v-if="isAdmin">
       <router-link class="item btn btn-link" to="/addSession">Добавить сеанс</router-link>
-    </div>
-    <div v-else>
-      Добавление доступно только авторизованным пользователям
     </div>
     <ul class="list-group">
       <li class="list-group-item" v-for="(session, index) in sessions" :key="index">
@@ -13,7 +10,7 @@
           name: 'session-details',
           params: { id: session.id }
         }">
-          {{ session.id }}
+          {{ session.id }} {{ movies[index] }} {{ halls[index] }}
         </router-link>
       </li>
     </ul>
@@ -29,7 +26,9 @@ export default {
   data() {
     return {
       sessions: [],
-      displayContent: false
+      movies: [],
+      halls: [],
+      isAdmin: false,
     };
   },
   methods: {
@@ -42,19 +41,25 @@ export default {
         .catch(e => {
           console.log(e);
         });
+    },
+    getMovie(id) {
+      http.get("/movie/" + id)
+        .then(response => {
+          return response.data;
+        });
+    },
+    getHalls(id) {
+      http.get("/hall/" + id)
+        .then(response => {
+          return response.data;
+        });
     }
   },
-  mounted() {
-    UserService.getUserBoard()
-      .then(() => {
-        this.displayContent = true;
-      })
-      .catch(e => {
-        this.content =
-          (e.response && e.response.data) ||
-          e.message ||
-          e.toString();
-      });
+  async mounted() {
+    if (this.$store.state.auth.user) {
+      let user = await UserService.getUser(this.$store.state.auth.user.id);
+      if (user.role == "admin") this.isAdmin = true;
+    }
     this.getSessions();
   }
 }

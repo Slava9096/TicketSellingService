@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="isAdmin">
     <h4>Добавление зала</h4>
     <div v-if="!submitted">
       <form @submit="addHall">
@@ -21,10 +21,14 @@
       </div>
     </div>
   </div>
+  <div v-else>
+    Недостаточно прав для добавления
+  </div>
 </template>
 
 <script>
 import http from "../../http-common";
+import UserService from '../../services/user.service';
 export default {
   name: "AddHall",
   data() {
@@ -34,6 +38,7 @@ export default {
         seatsNumber: null,
         type: ""
       },
+      isAdmin: false,
       submitted: false
     };
   },
@@ -62,6 +67,12 @@ export default {
         seatsNumber: this.hall.seatsNumber,
         type: this.hall.type
       };
+    }
+  },
+  async mounted() {
+    if (this.$store.state.auth.user) {
+      let user = await UserService.getUser(this.$store.state.auth.user.id);
+      if (user.role == "admin") this.isAdmin = true;
     }
   }
 }

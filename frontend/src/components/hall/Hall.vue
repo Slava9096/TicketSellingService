@@ -1,20 +1,36 @@
 <template>
   <div v-if="this.hall">
     <h4>Зал</h4>
-    <div v-if="!submitted">
-      <form @submit="updateHall">
-        <input class="form-control" type="text" name="hallNumber" id="hallNumber" placeholder="Номер зала" required
-          v-model="hall.hallNumber">
-        <input class="form-control" type="number" name="seatsNumber" id="seatsNumber" placeholder="Количество мест"
-          required v-model="hall.seatsNumber">
-        <input class="form-control" type="text" name="type" id="type" placeholder="Тип" required v-model="hall.type">
-        <input class="btn btn-primary" type="submit" value="Обновить">
-      </form>
-      <button class="btn btn-danger" v-on:click="deleteHall()">Удалить</button>
+    <div v-if="isAdmin">
+      <div v-if="!submitted">
+        <form @submit="updateHall">
+          <input class="form-control" type="text" name="hallNumber" id="hallNumber" placeholder="Номер зала" required
+            v-model="hall.hallNumber">
+          <input class="form-control" type="number" name="seatsNumber" id="seatsNumber" placeholder="Количество мест"
+            required v-model="hall.seatsNumber">
+          <input class="form-control" type="text" name="type" id="type" placeholder="Тип" required v-model="hall.type">
+          <input class="btn btn-primary" type="submit" value="Обновить">
+        </form>
+        <button class="btn btn-danger" v-on:click="deleteHall()">Удалить</button>
+      </div>
+      <div v-else>
+        <h4>Вы успешно обновили запись</h4>
+        <router-link to="/listHalls">Вернуться к списку залов</router-link>
+      </div>
     </div>
     <div v-else>
-      <h4>Вы успешно обновили запись</h4>
-      <router-link to="/listHalls">Вернуться к списку залов</router-link>
+      <p>
+        <strong>Номер зала:</strong>
+        {{ hall.hallNumber }}
+      </p>
+      <p>
+        <strong>Количество мест:</strong>
+        {{ hall.seatsNumber }}
+      </p>
+      <p>
+        <strong>Тип зала:</strong>
+        {{ hall.type }}
+      </p>
     </div>
   </div>
   <div v-else>
@@ -25,12 +41,14 @@
 
 <script>
 import http from "../../http-common";
+import UserService from '../../services/user.service';
 export default {
   name: "hall-details",
   props: ['id'],
   data() {
     return {
       hall: null,
+      isAdmin: false,
       submitted: false
     };
   },
@@ -72,7 +90,11 @@ export default {
         });
     }
   },
-  mounted() {
+  async mounted() {
+    if (this.$store.state.auth.user) {
+      let user = await UserService.getUser(this.$store.state.auth.user.id);
+      if (user.role == "admin") this.isAdmin = true;
+    }
     this.getHall();
   }
 }

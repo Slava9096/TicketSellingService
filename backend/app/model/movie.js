@@ -23,8 +23,8 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.TEXT,
       allowNull: false
     },
-    releaseDate: {
-      type: DataTypes.DATEONLY,
+    releaseYear: {
+      type: DataTypes.INTEGER(4),
       allowNull: false
     }
   }, {

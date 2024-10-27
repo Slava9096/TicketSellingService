@@ -1,11 +1,8 @@
 <template>
   <div>
     <h4>Список фильмов</h4>
-    <div v-if="displayContent">
+    <div v-if="isAdmin">
       <router-link class="item btn btn-link" to="/addMovie">Добавить фильм</router-link>
-    </div>
-    <div v-else>
-      Добавление доступно только авторизованным пользователям
     </div>
     <ul class="list-group">
       <li class="list-group-item" v-for="(movie, index) in movies" :key="index">
@@ -29,7 +26,7 @@ export default {
   data() {
     return {
       movies: [],
-      displayContent: false
+      isAdmin: false,
     };
   },
   methods: {
@@ -42,19 +39,13 @@ export default {
         .catch(e => {
           console.log(e);
         });
-    }
+    },
   },
-  mounted() {
-    UserService.getUserBoard()
-      .then(() => {
-        this.displayContent = true;
-      })
-      .catch(e => {
-        this.content =
-          (e.response && e.response.data) ||
-          e.message ||
-          e.toString();
-      });
+  async mounted() {
+    if (this.$store.state.auth.user) {
+      let user = await UserService.getUser(this.$store.state.auth.user.id);
+      if (user.role == "admin") this.isAdmin = true;
+    }
     this.getMovies();
   }
 }

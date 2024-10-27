@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="isAdmin">
     <h4>Добавление фильма</h4>
     <div v-if="!submitted">
       <form @submit="addMovie">
@@ -11,8 +11,8 @@
           v-model="movie.movieLength">
         <input class="form-control" type="text" name="desc" id="desc" placeholder="Описание фильма" required
           v-model="movie.description">
-        <input class="form-control" type="date" name="releaseDate" id="releaseDate" placeholder="Дата выхода" required
-          v-model="movie.releaseDate">
+        <input class="form-control" type="number" min="1900" max="2099" name="releaseYear" id="releaseYear"
+          placeholder="Год выхода" required v-model="movie.releaseYear">
         <input class="btn btn-primary" type="submit" value="Добавить">
       </form>
     </div>
@@ -26,10 +26,14 @@
       </div>
     </div>
   </div>
+  <div v-else>
+    Недостаточно прав для добавления
+  </div>
 </template>
 
 <script>
 import http from "../../http-common";
+import UserService from '../../services/user.service';
 export default {
   name: "AddMovie",
   data() {
@@ -39,8 +43,9 @@ export default {
         genre: "",
         movieLength: null,
         description: "",
-        releaseDate: null
+        releaseYear: null
       },
+      isAdmin: false,
       submitted: false
     };
   },
@@ -52,7 +57,7 @@ export default {
         genre: this.movie.genre,
         movieLength: this.movie.movieLength,
         description: this.movie.description,
-        releaseDate: this.movie.releaseDate
+        releaseYear: this.movie.releaseYear
       };
       http
         .post("/movies", data)
@@ -71,8 +76,14 @@ export default {
         genre: "",
         movieLength: null,
         description: "",
-        releaseDate: null
+        releaseYear: null
       };
+    }
+  },
+  async mounted() {
+    if (this.$store.state.auth.user) {
+      let user = await UserService.getUser(this.$store.state.auth.user.id);
+      if (user.role == "admin") this.isAdmin = true;
     }
   }
 }

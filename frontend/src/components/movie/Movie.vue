@@ -1,17 +1,49 @@
 <template>
   <div v-if="this.movie">
     <h4>Фильм</h4>
-    <div v-if="!submitted">
-      <form @submit="updateMovie">
-        <input class="form-control" type="text" name="title" id="title" placeholder="Наименование фильма" required
-          v-model="movie.title">
-        <input class="btn btn-primary" type="submit" value="Обновить">
-      </form>
-      <button class="btn btn-danger" v-on:click="deleteMovie()">Удалить</button>
+    <div v-if="isAdmin">
+      <div v-if="!submitted">
+        <form @submit="updateMovie">
+          <input class="form-control" type="text" name="name" id="name" placeholder="Наименование фильма" required
+            v-model="movie.name">
+          <input class="form-control" type="text" name="genre" id="genre" placeholder="Жанр" required
+            v-model="movie.genre">
+          <input class="form-control" type="number" name="length" id="length" placeholder="Длительность" required
+            v-model="movie.length">
+          <input class="form-control" type="text" name="desc" id="desc" placeholder="Описание фильма" required
+            v-model="movie.description">
+          <input class="form-control" type="text" name="releaseYear" id="releaseYear" placeholder="Год выхода" required
+            v-model="movie.releaseYear">
+          <input class="btn btn-primary" type="submit" value="Обновить">
+        </form>
+        <button class="btn btn-danger" v-on:click="deleteMovie()">Удалить</button>
+      </div>
+      <div v-else>
+        <h4>Вы успешно обновили запись</h4>
+        <router-link to="/listMovies">Вернуться к списку фильмов</router-link>
+      </div>
     </div>
     <div v-else>
-      <h4>Вы успешно обновили запись</h4>
-      <router-link to="/listMovies">Вернуться к списку фильмов</router-link>
+      <p>
+        <strong>Название:</strong>
+        {{ movie.name }}
+      </p>
+      <p>
+        <strong>Жанр:</strong>
+        {{ movie.genre }}
+      </p>
+      <p>
+        <strong>Длительность:</strong>
+        {{ movie.length }} мин.
+      </p>
+      <p>
+        <strong>Год выхода:</strong>
+        {{ movie.releaseYear }}
+      </p>
+      <p>
+        <strong>Описание:</strong>
+        {{ movie.description }}
+      </p>
     </div>
   </div>
   <div v-else>
@@ -22,12 +54,14 @@
 
 <script>
 import http from "../../http-common";
+import UserService from '../../services/user.service';
 export default {
   name: "movie-details",
   props: ['id'],
   data() {
     return {
       movie: null,
+      isAdmin: false,
       submitted: false
     };
   },
@@ -49,7 +83,7 @@ export default {
         genre: this.movie.genre,
         movieLength: this.movie.movieLength,
         description: this.movie.description,
-        releaseDate: this.movie.releaseDate
+        releaseYear: this.movie.releaseYear
       };
       http
         .put("/movie/" + this.movie.id, data)
@@ -69,9 +103,13 @@ export default {
         .catch(e => {
           console.log(e);
         });
-    }
+    },
   },
-  mounted() {
+  async mounted() {
+    if (this.$store.state.auth.user) {
+      let user = await UserService.getUser(this.$store.state.auth.user.id);
+      if (user.role == "admin") this.isAdmin = true;
+    }
     this.getMovie();
   }
 }
