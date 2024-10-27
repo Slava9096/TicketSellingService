@@ -49,6 +49,7 @@ export default {
   data() {
     return {
       session: {
+        id: null,
         date: "",
         movieId: null,
         hallId: null
@@ -60,7 +61,7 @@ export default {
     };
   },
   methods: {
-    addSession(e) {
+    async addSession(e) {
       e.preventDefault();
       var data = {
         date: "",
@@ -73,11 +74,28 @@ export default {
       var jsDate = new Date(htmlDate);
       data.date = jsDate.toISOString();
 
-      http
+      await http
         .post("/sessions", data)
         .then(response => {
           this.session.id = response.data.id;
         })
+        .catch(e => {
+          console.log(e);
+        });
+      let hall = this.halls.find((element) => element.id == this.session.hallId);
+      let ticketData = { tickets: [] };
+      for (let i = 0; i < hall.seatsNumber; i++) {
+        ticketData.tickets.push({
+          seat: i + 1,
+          status: "Свободно",
+          price: 0,
+          sessionId: this.session.id,
+          orderId: null
+        })
+      }
+      http
+        .post("/tickets", ticketData)
+        .then()
         .catch(e => {
           console.log(e);
         });

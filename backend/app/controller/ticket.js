@@ -63,3 +63,12 @@ exports.findById = (req, res) => {
 			globalFunctions.sendError(res, err);
 		})
 };
+exports.createMany = (req, res) => {
+	Ticket.bulkCreate(req.body.tickets)
+		.then(object => {
+			globalFunctions.sendResult(res, object);
+		})
+		.catch(err => {
+			globalFunctions.sendError(res, err);
+		})
+};
