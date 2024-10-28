@@ -1,11 +1,23 @@
 var db = require('../config/db.config.js');
 var globalFunctions = require('../config/global.functions.js');
 var Session = db.session;
+var Movie = db.movie;
+var Hall = db.hall;
 
 exports.findAll = (req, res) => {
-	Session.findAll()
-		.then(objects => {
-			globalFunctions.sendResult(res, objects);
+	Session.findAll({
+		include: [{
+			model: Movie,
+			required: true
+		},
+		{
+			model: Hall,
+			required: true
+		}
+		]
+	})
+		.then(object => {
+			globalFunctions.sendResult(res, object);
 		})
 		.catch(err => {
 			globalFunctions.sendError(res, err);
@@ -51,7 +63,20 @@ exports.delete = (req, res) => {
 	});
 };
 exports.findById = (req, res) => {
-	Session.findByPk(req.params.id)
+	Session.findOne({
+		where: {
+			id: req.params.id
+		},
+		include: [{
+			model: Movie,
+			required: true
+		},
+		{
+			model: Hall,
+			required: true
+		}
+		]
+	})
 		.then(object => {
 			globalFunctions.sendResult(res, object);
 		})

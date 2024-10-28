@@ -72,3 +72,17 @@ exports.createMany = (req, res) => {
 			globalFunctions.sendError(res, err);
 		})
 };
+exports.findFreeTickets = (req, res) => {
+	Ticket.findAll({
+		where: {
+			status: "Свободно",
+			sessionId: req.params.id,
+		}
+	})
+		.then(object => {
+			globalFunctions.sendResult(res, object);
+		})
+		.catch(err => {
+			globalFunctions.sendError(res, err);
+		})
+};

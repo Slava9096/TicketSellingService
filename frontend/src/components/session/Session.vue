@@ -39,12 +39,20 @@
       </p>
       <p>
         <strong>Фильм:</strong>
-        {{ session.hallId }}
+        {{ session.movie.name }}
       </p>
       <p>
         <strong>Зал:</strong>
-        {{ session.hallId }}
+        Зал {{ session.hall.hallNumber }}
       </p>
+    </div>
+    <div>
+      <p>Свободные места:</p>
+      <ul class="group-list">
+        <li class="group-list-item" v-for="ticket in freeTickets" :key="ticket.id">
+          {{ ticket.seat }}
+        </li>
+      </ul>
     </div>
   </div>
   <div v-else>
@@ -64,14 +72,15 @@ export default {
       session: null,
       movies: [],
       halls: [],
+      freeTickets: [],
       isAdmin: false,
       sessionDateString: "",
       submitted: false
     };
   },
   methods: {
-    getSession() {
-      http
+    async getSession() {
+      await http
         .get("/session/" + this.id)
         .then(response => {
           this.session = response.data;
@@ -121,15 +130,22 @@ export default {
           this.halls = response.data;
         });
     },
+    getFreeTickets() {
+      http.get("/ticketsFree/" + this.session.id)
+        .then(response => {
+          this.freeTickets = response.data;
+        });
+    },
   },
   async mounted() {
     if (this.$store.state.auth.user) {
       let user = await UserService.getUser(this.$store.state.auth.user.id);
       if (user.role == "admin") this.isAdmin = true;
     }
-    this.getSession();
+    await this.getSession();
     this.getMovies();
     this.getHalls();
+    this.getFreeTickets();
   }
 }
 </script>

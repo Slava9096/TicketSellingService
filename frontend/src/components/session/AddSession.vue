@@ -23,6 +23,10 @@
             </option>
           </select>
         </div>
+        <div>
+          <input class="form-control" type="number" min="0" name="ticketPrice" id="ticketPrice"
+            placeholder="Стоимость билетов" required v-model="ticketPrice">
+        </div>
         <input class="btn btn-primary" type="submit" value="Добавить">
       </form>
     </div>
@@ -56,6 +60,7 @@ export default {
       },
       movies: [],
       halls: [],
+      ticketPrice: 0,
       isAdmin: false,
       submitted: false
     };
@@ -88,7 +93,7 @@ export default {
         ticketData.tickets.push({
           seat: i + 1,
           status: "Свободно",
-          price: 0,
+          price: this.ticketPrice,
           sessionId: this.session.id,
           orderId: null
         })
