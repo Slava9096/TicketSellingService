@@ -1,58 +1,62 @@
 <template>
-  <div v-if="this.session">
+  <div v-if="session">
     <h4>Сеанс</h4>
     <div v-if="isAdmin">
       <div v-if="!submitted">
         <form @submit="updateSession">
-          <div>
-            <input class="form-control" type="datetime-local" name="date" id="date" placeholder="Дата сеанса" required
-              v-model="session.date">
+          <div class="mb-3">
+            <label for="date" class="form-label">Дата сеанса</label>
+            <input class="form-control" type="datetime-local" id="date" required v-model="session.date">
           </div>
-          <div>
+          <div class="mb-3">
+            <label for="movie" class="form-label">Выберите фильм</label>
             <select class="form-select" required v-model="session.movieId">
               <option value="" disabled selected>Выберите фильм</option>
-              <option v-for="movie in movies" v-bind:key="movie.id" v-bind:value="movie.id">
+              <option v-for="movie in movies" :key="movie.id" :value="movie.id">
                 {{ movie.name }}
               </option>
             </select>
           </div>
-          <div>
+          <div class="mb-3">
+            <label for="hall" class="form-label">Выберите зал</label>
             <select class="form-select" required v-model="session.hallId">
               <option value="" disabled selected>Выберите зал</option>
-              <option v-for="hall in halls" v-bind:key="hall.id" v-bind:value="hall.id">
+              <option v-for="hall in halls" :key="hall.id" :value="hall.id">
                 Зал {{ hall.hallNumber }}
               </option>
             </select>
           </div>
+          <button type="submit" class="btn btn-primary">Обновить сеанс</button>
         </form>
-        <button class="btn btn-danger" v-on:click="deleteSession()">Удалить</button>
+        <button class="btn btn-danger" @click="deleteSession()">Удалить</button>
       </div>
       <div v-else>
         <h4>Вы успешно обновили запись</h4>
-        <router-link to="/listSessions">Вернуться к списку сеансов</router-link>
+        <router-link to="/listSessions" class="btn btn-secondary">Вернуться к списку сеансов</router-link>
       </div>
     </div>
     <div v-else>
-      <p>
-        <strong>Дата сеанса:</strong>
-        {{ sessionDateString }}
-      </p>
-      <p>
-        <strong>Фильм:</strong>
-        {{ session.movie.name }}
-      </p>
-      <p>
-        <strong>Зал:</strong>
-        Зал {{ session.hall.hallNumber }}
-      </p>
+      <p><strong>Дата сеанса:</strong> {{ sessionDateString }}</p>
+      <p><strong>Фильм:</strong> {{ session.movie.name }}</p>
+      <p><strong>Зал:</strong> Зал {{ session.hall.hallNumber }}</p>
     </div>
     <div>
-      <p>Свободные места:</p>
-      <ul class="group-list">
-        <li class="group-list-item" v-for="ticket in freeTickets" :key="ticket.id">
-          {{ ticket.seat }}
-        </li>
-      </ul>
+      <h5>Свободные места:</h5>
+      <div v-if="loggedIn" class="seats-container">
+        <div class="seat" v-for="ticket in freeTickets" :key="ticket.id">
+          <router-link :to="{
+            name: 'buy-ticket',
+            params: { ticketId: ticket.id }
+          }">
+            Место {{ ticket.seat }}
+          </router-link>
+        </div>
+      </div>
+      <div v-else class="seats-container">
+        <div class="seat" v-for="ticket in freeTickets" :key="ticket.id">
+          Место {{ ticket.seat }}
+        </div>
+      </div>
     </div>
   </div>
   <div v-else>
@@ -74,6 +78,7 @@ export default {
       halls: [],
       freeTickets: [],
       isAdmin: false,
+      loggedIn: false,
       sessionDateString: "",
       submitted: false
     };
@@ -140,6 +145,7 @@ export default {
   async mounted() {
     if (this.$store.state.auth.user) {
       let user = await UserService.getUser(this.$store.state.auth.user.id);
+      if (user) this.loggedIn = true;
       if (user.role == "admin") this.isAdmin = true;
     }
     await this.getSession();
@@ -150,4 +156,10 @@ export default {
 }
 </script>
 
-<style></style>
+<style>
+.seats-container {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 10px;
+}
+</style>

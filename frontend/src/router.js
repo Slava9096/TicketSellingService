@@ -18,6 +18,9 @@ import Login from "./components/authorization/Login";
 import Profile from "./components/authorization/Profile";
 import Register from "./components/authorization/Register";
 
+import BuyTicket from "./components/ticket/BuyTicket";
+import BuyTicketMovie from "./components/ticket/BuyTicketMovie";
+
 const routes = [
     {
         path: "/listHalls",
@@ -121,7 +124,27 @@ const routes = [
             title: "Профиль пользователя",
             requiredAuth: true
         }
-    }
+    },
+    {
+        path: "/ticket/movie=:movieId",
+        name: "buy-ticket-movie",
+        component: BuyTicketMovie,
+        props: true,
+        meta: {
+            title: "Купить билет",
+            requiredAuth: true
+        }
+    },
+    {
+        path: "/ticket/id=:ticketId",
+        name: "buy-ticket",
+        component: BuyTicket,
+        props: true,
+        meta: {
+            title: "Купить билет",
+            requiredAuth: true
+        }
+    },
 ];
 
 const router = createRouter({

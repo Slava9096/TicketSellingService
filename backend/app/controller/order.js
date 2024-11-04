@@ -1,6 +1,7 @@
 var db = require('../config/db.config.js');
 var globalFunctions = require('../config/global.functions.js');
 var Order = db.userOrder;
+var Ticket = db.ticket;
 
 exports.findAll = (req, res) => {
 	Order.findAll()
@@ -50,6 +51,23 @@ exports.delete = (req, res) => {
 };
 exports.findById = (req, res) => {
 	Order.findByPk(req.params.id)
+		.then(object => {
+			globalFunctions.sendResult(res, object);
+		})
+		.catch(err => {
+			globalFunctions.sendError(res, err);
+		})
+};
+exports.findByUserId = (req, res) => {
+	Order.findAll({
+		where: {
+			userId: req.params.userId
+		},
+		include: [{
+			model: Ticket,
+			required: true
+		}]
+	})
 		.then(object => {
 			globalFunctions.sendResult(res, object);
 		})

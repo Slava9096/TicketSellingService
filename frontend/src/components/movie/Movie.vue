@@ -44,6 +44,17 @@
         <strong>Описание:</strong>
         {{ movie.description }}
       </p>
+      <div v-if="user">
+        <router-link :to="{
+          name: 'buy-ticket-movie',
+          params: { movieId: movie.id }
+        }">
+          <button type="button" class="btn btn-primary">Купить билет</button>
+        </router-link>
+      </div>
+      <div v-else>
+        Вы должны быть авторизированы чтобы купить билет
+      </div>
     </div>
   </div>
   <div v-else>
@@ -61,6 +72,7 @@ export default {
   data() {
     return {
       movie: null,
+      user: null,
       isAdmin: false,
       submitted: false
     };
@@ -107,8 +119,8 @@ export default {
   },
   async mounted() {
     if (this.$store.state.auth.user) {
-      let user = await UserService.getUser(this.$store.state.auth.user.id);
-      if (user.role == "admin") this.isAdmin = true;
+      this.user = await UserService.getUser(this.$store.state.auth.user.id);
+      if (this.user.role == "admin") this.isAdmin = true;
     }
     this.getMovie();
   }

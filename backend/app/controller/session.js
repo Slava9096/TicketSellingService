@@ -1,5 +1,6 @@
 var db = require('../config/db.config.js');
 var globalFunctions = require('../config/global.functions.js');
+const { Op } = require('sequelize');
 var Session = db.session;
 var Movie = db.movie;
 var Hall = db.hall;
@@ -76,6 +77,26 @@ exports.findById = (req, res) => {
 			required: true
 		}
 		]
+	})
+		.then(object => {
+			globalFunctions.sendResult(res, object);
+		})
+		.catch(err => {
+			globalFunctions.sendError(res, err);
+		})
+};
+exports.findMovieSessionsFromDate = (req, res) => {
+	Session.findAll({
+		where: {
+			date: {
+				[Op.gte]: req.params.date
+			},
+			movieId: req.params.movieId,
+		},
+		include: [{
+			model: Hall,
+			required: true
+		}]
 	})
 		.then(object => {
 			globalFunctions.sendResult(res, object);
