@@ -1,35 +1,100 @@
 <template>
-  <div v-if="isAdmin">
-    <h4>Добавление фильма</h4>
+  <div v-if="isAdmin" class="container mt-4">
+    <h4 class="text-center mb-4">Добавление фильма</h4>
     <div v-if="!submitted">
-      <form @submit="addMovie">
-        <input class="form-control" type="text" name="name" id="name" placeholder="Наименование фильма" required
-          v-model="movie.name">
-        <input class="form-control" type="text" name="genre" id="genre" placeholder="Жанр" required
-          v-model="movie.genre">
-        <input class="form-control" type="number" name="length" id="length" placeholder="Длительность" required
-          v-model="movie.movieLength">
-        <input class="form-control" type="text" name="desc" id="desc" placeholder="Описание фильма" required
-          v-model="movie.description">
-        <input class="form-control" type="number" min="1900" max="2099" name="releaseYear" id="releaseYear"
-          placeholder="Год выхода" required v-model="movie.releaseYear">
-        <input class="btn btn-primary" type="submit" value="Добавить">
+      <form @submit="addMovie" class="form-card p-4 border rounded">
+        <div class="mb-3">
+          <input class="form-control" type="text" name="name" id="name" placeholder="Наименование фильма" required
+            v-model="movie.name">
+        </div>
+        <div class="mb-3">
+          <input class="form-control" type="text" name="genre" id="genre" placeholder="Жанр" required
+            v-model="movie.genre">
+        </div>
+        <div class="mb-3">
+          <input class="form-control" type="number" min="0" name="length" id="length" placeholder="Длительность (мин)"
+            required v-model="movie.movieLength">
+        </div>
+        <div class="mb-3">
+          <input class="form-control" type="text" name="desc" id="desc" placeholder="Описание фильма" required
+            v-model="movie.description">
+        </div>
+        <div class="mb-3">
+          <input class="form-control" type="number" min="1900" max="2099" name="releaseYear" id="releaseYear"
+            placeholder="Год выхода" required v-model="movie.releaseYear">
+        </div>
+        <button class="btn btn-primary" type="submit">Добавить</button>
       </form>
     </div>
     <div v-else>
-      <h4>Вы успешно добавили запись</h4>
-      <div>
+      <h4 class="text-success">Вы успешно добавили запись</h4>
+      <div class="mt-3">
         <button class="btn btn-primary" v-on:click="newMovie">Добавить новый фильм</button>
       </div>
-      <div>
-        <router-link to="/listMovies">Вернуться к списку фильмов</router-link>
+      <div class="mt-2">
+        <router-link class="btn btn-link" to="/listMovies">Вернуться к списку фильмов</router-link>
       </div>
     </div>
   </div>
-  <div v-else>
+  <div v-else class="text-danger mt-4">
     Недостаточно прав для добавления
   </div>
 </template>
+
+<style scoped>
+.container {
+  max-width: 600px;
+  /* Ограничение ширины контейнера */
+  margin: auto;
+  /* Центрирование контейнера */
+}
+
+h4 {
+  font-weight: bold;
+  /* Жирный шрифт для заголовка */
+}
+
+.form-card {
+  background-color: #f8f9fa;
+  /* Светлый фон для формы */
+  border: 1px solid #dee2e6;
+  /* Светлая граница */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  /* Легкая тень для глубины */
+  border-radius: 8px;
+  /* Закругленные углы */
+}
+
+.mb-3 {
+  margin-bottom: 1rem;
+  /* Отступ снизу для полей ввода */
+}
+
+.btn {
+  font-weight: bold;
+  /* Жирный шрифт для кнопок */
+}
+
+.text-success {
+  color: #28a745;
+  /* Зеленый цвет для успешного сообщения */
+}
+
+.text-danger {
+  color: #dc3545;
+  /* Красный цвет для сообщений об ошибках */
+}
+
+.btn-link {
+  color: #007bff;
+  /* Цвет ссылки */
+}
+
+.btn-link:hover {
+  text-decoration: underline;
+  /* Подчеркивание при наведении */
+}
+</style>
 
 <script>
 import http from "../../http-common";

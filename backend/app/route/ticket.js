@@ -1,6 +1,7 @@
 var { authJwt } = require("../middleware");
 module.exports = (app) => {
 	const ticket = require('../controller/ticket');
+	app.get('/api/tickets/orderId=:orderId', [authJwt.verifyToken], ticket.findByOrderId)
 	app.get('/api/tickets', [authJwt.verifyToken], ticket.findAll)
 		.post('/api/tickets', [authJwt.verifyToken], ticket.createMany)
 	app.get('/api/ticket/:id', [authJwt.verifyToken], ticket.findById)

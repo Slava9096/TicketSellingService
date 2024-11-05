@@ -1,31 +1,81 @@
 <template>
-  <div class="col-md-5">
-    <h4 class="mx-auto mt-4">Регистрация пользователя</h4>
-    <form name="form" @submit="handleRegister">
-      <div v-if="!successful">
-        <div class="form-group">
-          <input type="text" class="form-control" name="username" placeholder="Логин" v-model="user.username"
-            required />
-          <input type="text" class="form-control" name="name" placeholder="Имя" v-model="user.name" required />
-          <input type="email" class="form-control" name="email" placeholder="Почта" v-model="user.email" required />
-        </div>
-        <div class="form-group">
-          <input type="password" class="form-control" name="password" placeholder="Пароль" v-model="user.password"
-            required />
-        </div>
-        <div class="form-group">
-          <button class="btn btn-primary">Зарегистрировать</button>
+  <div class="container mt-5">
+    <div class="row justify-content-center">
+      <div class="col-md-6 col-lg-4">
+        <div class="card shadow">
+          <div class="card-body">
+            <h4 class="text-center mb-4">Регистрация пользователя</h4>
+            <form name="form" @submit="handleRegister">
+              <div v-if="!successful">
+                <div class="form-group mb-3">
+                  <input type="text" class="form-control" name="username" placeholder="Логин" v-model="user.username"
+                    required />
+                </div>
+                <div class="form-group mb-3">
+                  <input type="text" class="form-control" name="name" placeholder="Имя" v-model="user.name" required />
+                </div>
+                <div class="form-group mb-3">
+                  <input type="email" class="form-control" name="email" placeholder="Почта" v-model="user.email"
+                    required />
+                </div>
+                <div class="form-group mb-4">
+                  <input type="password" class="form-control" name="password" placeholder="Пароль"
+                    v-model="user.password" required />
+                </div>
+                <div class="form-group mb-4">
+                  <button class="btn btn-primary w-100">Зарегистрировать</button>
+                </div>
+              </div>
+              <div class="form-group">
+                <div v-if="successMessage" class="alert alert-success" role="alert">{{ successMessage }}</div>
+              </div>
+              <div class="form-group">
+                <div v-if="errorMessage" class="alert alert-danger" role="alert">{{ errorMessage }}</div>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
-      <div class="form-group">
-        <div v-if="successMessage" class="alert alert-success" role="alert">{{ successMessage }}</div>
-      </div>
-      <div class="form-group">
-        <div v-if="errorMessage" class="alert alert-danger" role="alert">{{ errorMessage }}</div>
-      </div>
-    </form>
+    </div>
   </div>
 </template>
+
+<style scoped>
+.container {
+  max-width: 800px;
+  /* Увеличение максимальной ширины контейнера */
+}
+
+.card {
+  border-radius: 10px;
+  /* Закругленные углы карточки */
+}
+
+.card-body {
+  padding: 2rem;
+  /* Увеличенные отступы внутри карточки */
+}
+
+h4 {
+  font-weight: bold;
+  /* Жирный шрифт для заголовка */
+}
+
+.form-control {
+  border-radius: 5px;
+  /* Закругленные углы для полей ввода */
+}
+
+.btn {
+  font-weight: bold;
+  /* Жирный шрифт для кнопки */
+}
+
+.alert {
+  margin-top: 10px;
+  /* Отступ сверху для сообщения об ошибке */
+}
+</style>
 <script>
 export default {
   name: 'RegisterUser',

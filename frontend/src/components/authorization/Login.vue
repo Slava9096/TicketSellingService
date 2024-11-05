@@ -1,30 +1,75 @@
 <template>
-    <div class="col-md-5">
-        <h4 class="mx-auto mt-4">Вход в систему</h4>
-        <form name="form" @submit="handleLogin">
-            <div class="form-group">
-                <input type="text" class="form-control" name="username" placeholder="Логин" v-model="user.username"
-                    required />
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-5">
+                <div class="card shadow">
+                    <div class="card-body">
+                        <h4 class="text-center mb-4">Вход в систему</h4>
+                        <form name="form" @submit="handleLogin">
+                            <div class="form-group mb-3">
+                                <input type="text" class="form-control" name="username" placeholder="Логин"
+                                    v-model="user.username" required />
+                            </div>
+                            <div class="form-group mb-3">
+                                <input type="password" class="form-control" name="password" placeholder="Пароль"
+                                    v-model="user.password" required />
+                            </div>
+                            <div class="form-group mb-4">
+                                <button class="btn btn-primary w-100" :disabled="loading">
+                                    <span v-show="loading" class="spinner-border spinner-border-sm"></span>
+                                    <span>Войти</span>
+                                </button>
+                            </div>
+                            <div class="text-center mb-3">
+                                <router-link to="/register">Зарегистрироваться</router-link>
+                            </div>
+                            <div class="form-group">
+                                <div v-if="message" class="alert alert-danger" role="alert">{{ message }}</div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </div>
-            <div class="form-group">
-                <input type="password" class="form-control" name="password" placeholder="Пароль" v-model="user.password"
-                    required />
-            </div>
-            <div class="form-group">
-                <button class="btn btn-primary" :disabled="loading">
-                    <span v-show="loading" class="spinner-border spinner-border-sm"></span>
-                    <span>Войти</span>
-                </button>
-            </div>
-            <router-link to="/register">
-                Зарегистрироваться
-            </router-link>
-            <div class="form-group">
-                <div v-if="message" class="alert alert-danger" role="alert">{{ message }}</div>
-            </div>
-        </form>
+        </div>
     </div>
 </template>
+
+<style scoped>
+.container {
+    max-width: 600px;
+    /* Ограничение ширины контейнера */
+}
+
+.card {
+    border-radius: 10px;
+    /* Закругленные углы карточки */
+}
+
+.card-body {
+    padding: 2rem;
+    /* Увеличенные отступы внутри карточки */
+}
+
+h4 {
+    font-weight: bold;
+    /* Жирный шрифт для заголовка */
+}
+
+.form-control {
+    border-radius: 5px;
+    /* Закругленные углы для полей ввода */
+}
+
+.btn {
+    font-weight: bold;
+    /* Жирный шрифт для кнопки */
+}
+
+.alert {
+    margin-top: 10px;
+    /* Отступ сверху для сообщения об ошибке */
+}
+</style>
 <script>
 export default {
     name: 'LoginUser',

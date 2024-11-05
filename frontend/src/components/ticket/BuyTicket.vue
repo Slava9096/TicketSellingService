@@ -1,19 +1,54 @@
 <template>
-  <div>
-    <h4>Покупка билета</h4>
-    <div v-if="!success">
-      <p>Сеанс {{ ticket.session.date }}</p>
-      <p>Место {{ ticket.seat }}</p>
-      <button type="button" @click="buyTicket()" class="btn btn-primary">Купить билет</button>
+  <div class="container mt-4">
+    <h4 class="text-center mb-4">Покупка билета</h4>
+    <div v-if="!success" class="ticket-info p-4 border rounded">
+      <p><strong>Сеанс:</strong> {{ ticket.session.date }}</p>
+      <p><strong>Место:</strong> {{ ticket.seat }}</p>
+      <button type="button" @click="buyTicket()" class="btn btn-primary mt-3">Купить билет</button>
     </div>
     <div v-else>
-      <h4>Вы успешно купили билет</h4>
-      <div>
-        <router-link to="/listSessions">Вернуться к списку сеансов</router-link>
+      <h4 class="text-success">Вы успешно купили билет!</h4>
+      <div class="mt-3">
+        <router-link to="/listSessions" class="btn btn-secondary">Вернуться к списку сеансов</router-link>
       </div>
     </div>
   </div>
 </template>
+
+<style scoped>
+.container {
+  max-width: 600px;
+  /* Ограничение ширины контейнера */
+  margin: auto;
+  /* Центрирование контейнера */
+}
+
+h4 {
+  font-weight: bold;
+  /* Жирный шрифт для заголовка */
+}
+
+.ticket-info {
+  background-color: #f8f9fa;
+  /* Светлый фон для информации о билете */
+  border: 1px solid #dee2e6;
+  /* Светлая граница */
+  border-radius: 8px;
+  /* Закругленные углы */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  /* Легкая тень для глубины */
+}
+
+.btn {
+  font-weight: bold;
+  /* Жирный шрифт для кнопок */
+}
+
+.text-success {
+  color: #28a745;
+  /* Зеленый цвет для успешного сообщения */
+}
+</style>
 
 <script>
 import http from "../../http-common";

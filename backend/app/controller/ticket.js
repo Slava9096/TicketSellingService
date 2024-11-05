@@ -2,6 +2,7 @@ var db = require('../config/db.config.js');
 var globalFunctions = require('../config/global.functions.js');
 var Ticket = db.ticket;
 var Session = db.session;
+var Movie = db.movie;
 
 exports.findAll = (req, res) => {
 	Ticket.findAll()
@@ -95,3 +96,26 @@ exports.findFreeTickets = (req, res) => {
 			globalFunctions.sendError(res, err);
 		})
 };
+
+exports.findByOrderId = (req, res) => {
+	Ticket.findAll({
+		where: {
+			orderId: req.params.orderId,
+		},
+		include: [{
+			model: Session,
+			include: [{
+				model: Movie,
+				required: true
+			}],
+			required: true
+		}]
+	})
+		.then(object => {
+			globalFunctions.sendResult(res, object);
+		})
+		.catch(err => {
+			globalFunctions.sendError(res, err);
+		})
+};
+

@@ -105,3 +105,25 @@ exports.findMovieSessionsFromDate = (req, res) => {
 			globalFunctions.sendError(res, err);
 		})
 };
+exports.findSessionsFromDate = (req, res) => {
+	Session.findAll({
+		where: {
+			date: {
+				[Op.gte]: req.params.date
+			},
+		},
+		include: [{
+			model: Hall,
+			required: true
+		}, {
+			model: Movie,
+			required: true
+		}]
+	})
+		.then(object => {
+			globalFunctions.sendResult(res, object);
+		})
+		.catch(err => {
+			globalFunctions.sendError(res, err);
+		})
+};

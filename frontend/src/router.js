@@ -21,7 +21,18 @@ import Register from "./components/authorization/Register";
 import BuyTicket from "./components/ticket/BuyTicket";
 import BuyTicketMovie from "./components/ticket/BuyTicketMovie";
 
+import Order from "./components/order/Order";
+import IndexPage from "./components/index/IndexPage";
+
 const routes = [
+    {
+        path: "/",
+        name: "index",
+        component: IndexPage,
+        meta: {
+            title: "Главная страница"
+        }
+    },
     {
         path: "/listHalls",
         name: "halls",
@@ -126,7 +137,7 @@ const routes = [
         }
     },
     {
-        path: "/ticket/movie=:movieId",
+        path: "/buyTicket/movie=:movieId",
         name: "buy-ticket-movie",
         component: BuyTicketMovie,
         props: true,
@@ -136,9 +147,19 @@ const routes = [
         }
     },
     {
-        path: "/ticket/id=:ticketId",
+        path: "/buyTicket/id=:ticketId",
         name: "buy-ticket",
         component: BuyTicket,
+        props: true,
+        meta: {
+            title: "Купить билет",
+            requiredAuth: true
+        }
+    },
+    {
+        path: "/order/:orderId",
+        name: "order-details",
+        component: Order,
         props: true,
         meta: {
             title: "Купить билет",

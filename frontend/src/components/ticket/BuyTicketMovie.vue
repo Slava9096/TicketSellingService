@@ -1,8 +1,8 @@
 <template>
-  <div>
-    <h4>Покупка билета</h4>
-    <div v-if="!success">
-      <form @submit="buyTicket">
+  <div class="container mt-4">
+    <h4 class="text-center mb-4">Покупка билета</h4>
+    <div v-if="!success" class="ticket-purchase-form p-4 border rounded">
+      <form @submit.prevent="buyTicket">
         <div class="mb-3">
           <label for="session" class="form-label">Выберите сеанс</label>
           <select @change="getFreeTickets" class="form-select" required v-model="session.id">
@@ -21,17 +21,57 @@
             </option>
           </select>
         </div>
+        <button type="submit" class="btn btn-primary">Купить билет</button>
       </form>
-      <button type="button" @click="buyTicket" class="btn btn-primary">Купить билет</button>
     </div>
     <div v-else>
-      <h4>Вы успешно купили билет</h4>
-      <div>
-        <router-link to="/listMovies">Вернуться к списку фильмов</router-link>
+      <h4 class="text-success">Вы успешно купили билет!</h4>
+      <div class="mt-3">
+        <router-link to="/listMovies" class="btn btn-secondary">Вернуться к списку фильмов</router-link>
       </div>
     </div>
   </div>
 </template>
+
+<style scoped>
+.container {
+  max-width: 600px;
+  /* Ограничение ширины контейнера */
+  margin: auto;
+  /* Центрирование контейнера */
+}
+
+h4 {
+  font-weight: bold;
+  /* Жирный шрифт для заголовка */
+}
+
+.ticket-purchase-form {
+  background-color: #f8f9fa;
+  /* Светлый фон для формы */
+  border: 1px solid #dee2e6;
+  /* Светлая граница */
+  border-radius: 8px;
+  /* Закругленные углы */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  /* Легкая тень для глубины */
+}
+
+.mb-3 {
+  margin-bottom: 1rem;
+  /* Отступ снизу для полей ввода */
+}
+
+.btn {
+  font-weight: bold;
+  /* Жирный шрифт для кнопок */
+}
+
+.text-success {
+  color: #28a745;
+  /* Зеленый цвет для успешного сообщения */
+}
+</style>
 
 <script>
 import http from "../../http-common";
